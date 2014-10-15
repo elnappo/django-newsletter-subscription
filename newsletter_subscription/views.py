@@ -91,7 +91,7 @@ def subscribe(request, code, backend):
         messages.error(request, _('We are sorry. This link is broken.'))
         return redirect('newsletter_subscription_form')
 
-    if backend.subscribe(email):
+    if backend.subscribe(email, request.META.get('REMOTE_ADDR'), request.META.get('HTTP_USER_AGENT')):
         messages.success(request, _('Your subscription has been activated.'))
 
     form = backend.subscription_details_form(email, request=request)

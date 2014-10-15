@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.forms.models import modelform_factory
 
 
@@ -11,12 +13,15 @@ class ModelBackend(object):
             is_active=True,
         ).exists()
 
-    def subscribe(self, email):
+    def subscribe(self, email, ip_address, user_agent):
         subscription, created = self.model_class.objects.get_or_create(
             email=email,
         )
         if not subscription.is_active:
             subscription.is_active = True
+            subscription.subscribe_confirmed_at = datetime.now()
+            subscription.subscribe_confirmed_ip = ip_address
+            subscription.subscribe_confirmed_user_agent = user_agent
             subscription.save()
             return True
         return False
@@ -38,7 +43,7 @@ class ModelBackend(object):
 
         form_class = modelform_factory(
             self.model_class,
-            exclude=('email', 'is_active',),
+            exclude=('email', 'is_active', 'subscribe_confirmed_at', 'subscribe_confirmed_ip', 'subscribe_confirmed_user_agent'),
         )
 
         return form_class(request.POST or None, instance=instance)
