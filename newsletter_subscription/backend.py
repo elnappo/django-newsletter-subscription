@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from django.utils import timezone
 from django.forms.models import modelform_factory
 
 
@@ -19,7 +18,7 @@ class ModelBackend(object):
         )
         if not subscription.is_active:
             subscription.is_active = True
-            subscription.subscribe_confirmed_at = datetime.now()
+            subscription.subscribe_confirmed_at = timezone.now()
             subscription.subscribe_confirmed_ip = ip_address
             subscription.subscribe_confirmed_user_agent = user_agent
             subscription.save()
