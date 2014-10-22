@@ -11,7 +11,7 @@ class SubscriptionBase(models.Model):
     subscribe_confirmed_at = models.DateTimeField(_('subscribe confirmed at'), null=True)
     subscribe_confirmed_ip = models.GenericIPAddressField(_('subscribe confirmed ip'), null=True)
     subscribe_confirmed_user_agent = models.CharField(_('subscribe confirmed user agent'),
-                                                      max_length=200, blank=True, default="")
+                                                      max_length=200, null=True, blank=True)
 
     class Meta:
         abstract = True

@@ -12,15 +12,16 @@ class ModelBackend(object):
             is_active=True,
         ).exists()
 
-    def subscribe(self, email, ip_address, user_agent):
+    def subscribe(self, email, request=None):
         subscription, created = self.model_class.objects.get_or_create(
             email=email,
         )
         if not subscription.is_active:
             subscription.is_active = True
             subscription.subscribe_confirmed_at = timezone.now()
-            subscription.subscribe_confirmed_ip = ip_address
-            subscription.subscribe_confirmed_user_agent = user_agent
+            if request:
+                subscription.subscribe_confirmed_ip = request.META.get('REMOTE_ADDR')
+                subscription.subscribe_confirmed_user_agent = request.META.get('HTTP_USER_AGENT')
             subscription.save()
             return True
         return False
